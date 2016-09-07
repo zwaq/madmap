@@ -1,0 +1,68 @@
+ <html>
+ <head>
+    <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+ <!--    <link rel="stylesheet" href="lib/vex/vex.css" />
+    <link rel="stylesheet" href="lib/vex/vex-theme-default.css" /> -->
+    <link rel="stylesheet" href="style.css" />
+    
+    <script src="lib/leaflet/leaflet.js"></script>
+    <!-- <script src="lib/vex/vex.combined.min.js"></script> -->
+    <script src="lib/jquery-3.1.0.min.js"></script>
+    <script src="lib/rotatedImageLayer.js"></script>
+    <script src="data/tiledb.json"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+<audio id="music" src="data/music/1.mp3" type="audio/mpeg" loop>
+<!--<audio id="music" src="data/music/1.mp3" type="audio/mpeg" autoplay loop>-->
+No audio tag wtf! Use better browser!
+</audio>
+<!-- The Modal -->
+<div id="settingsModal" class="modal">
+  <!-- Modal content -->
+<div class="modal-content">
+  <div class="modal-header">
+    <h2>Settings</h2>
+  </div>
+  <div class="modal-body">
+    <table>
+    <tr><th>Sounds</th></tr>
+    <tr><td>Play music</td><td><input type="checkbox" checked="checked" id="settingsMusic"></td></tr>
+    <tr><td>Play sound effects</td><td><input type="checkbox" checked="checked" id="settingsEffects"></td></tr>
+    </table>
+    <p>Some other text...</p>
+  </div>
+  <div class="modal-footer">
+    <button id="settingsCloseBtn">Close</button>
+  </div>
+</div>
+</div>
+
+<div id="investigatorPhaseAnnounceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Investigator Phase</h2>
+        </div>
+        <div class="modal-body">
+            <p>It starts now!</p>
+        </div>
+    </div>
+</div>
+
+<div id="mythosPhaseAnnounceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Mythos Phase</h2>
+        </div>
+        <div class="modal-body">
+            <p>It starts now!</p>
+        </div>
+    </div>
+</div>
+
+<div id="map" style="height: 800px; width: 1200px;"></div>
+<div id="foot" style="font-size: 20px;"><button id="settingsBtn">Settings</button></div>
+<div id="controls"><button onclick="step()">Next Phase/Turn</button></div>
+<div id="debug"><div>Turn: <span id="turncounter">1</span></div><div>Phase: <span id="phase">Investigator</span><p><input id="debugmode" type="checkbox">Debug mode</p></div>
+</body>
+</html>

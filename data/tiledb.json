@@ -1,0 +1,26 @@
+var tiledb = [
+    {
+        name: "lobby",
+        image: "data/tiles/lobby.jpg",
+        dimX: 3,
+        dimY: 2,
+        anchors: {
+			"door1": [10,10],
+			"stairstoright": [2,1.55]
+		}
+    },
+    {
+        name: "ballroom",
+        image: "data/tiles/ballroom.jpg",
+        dimX: 2,
+        dimY: 2,
+        anchors: {"center": [0.45, 1.7] }
+    },
+    {
+        name: "corridor",
+        image: "data/tiles/corridor.png",
+        dimX: 2,
+        dimY: 1,
+        anchors: {"center": [1,0.5] }
+    }
+];
