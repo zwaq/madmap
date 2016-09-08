@@ -177,35 +177,12 @@ window.onload = function() {
 	// madmap.addTileByName("lobby", xy([5,2]), xy([8,0]), {rotate: 2});
 	// madmap.addTileByName("lobby", xy([2,2]), xy([5,0]), {rotate: 0});
 	
-	
-	//madmap.addExplorationToken(madmap.getMapTileByName("ballroom").getAnchor("center"));
-	
-	var dialogHandler = function(e) {
-		yes = function() {
-			var m = new MadMapModal('dx');
-			m.toggle();
-		}
-		no = function() {
-			alert("no");
-		}
-		console.log("dialoghandler");
-		console.log(e);
-		var result = "<div class='dialog-container'>";
-		result += "The old man gazes at you with his old eyes. The old man gazes at you with his old eyes.The old man gazes at you with his old eyes.The old man gazes at you with his old eyes.The old man gazes at you with his old eyes.The old man gazes at you with his old eyes.The old man gazes at you with his old eyes.The old man gazes at you with his old eyes."
-		result += "<p><button onclick='yes()'>Yes</button><button style='float: right;' onclick='no()'>No</button></p>";
-		result += "</div>";
-		return result;
-	}
-	//marker = madmap.addSearchToken(xy([1.5,2])).bindTooltip("dialogue test").bindPopup(dialogHandler);	
-   
-	 // set up DOM elements
-	
 	var startModal = new MadMapModal("startModal", { title: "Welcome", body: "<p>Welcome to this proof of concept. This is the first screen. </p><p>It could describe the arrival of our heroes in a unknown haunted house. The lobby seems strangely familiar, though.</p><p>It is fully html enabled, allowing all kind of funny stuff <div style='text-align: center; font-weight: bold;'>like</div><div style='text-align: right;'>css.</div></p><p>This music is creepy, isnt it? Go check it out at <a href='http://freemusicarchive.org/music/Subterrestrial/Dead_But_Dreaming'>freemusicarchive.org</a>. You can disable it in the settings, if you want.</p><p>You can close this window with the close button below to enter our strange adventure!</p><p>Hero selection is not implemented yet.</p>", onClose: "kill"});
 	//startModal.addButton("dialog", "hello thar", function() { var sound = new Audio('data/sounds/door.mp3'); sound.play(); console.log("ja hier"); console.log(this); alert("hi"); });
 	//startModal.addButton("dialog", "get lost", function() { alert("tg"); });		
 	startModal.addToPage();
 	$("#startModalCloseBtn")[0].addEventListener('click', function() {
-		// this happens when the button was clicked
+		// this happens when the close button of the startmodal was clicked
 		madmap.addTileByName("lobby", xy([0,2]), xy([3,0]), {rotate: 0, fly: true});
 		var token;
 		window.setTimeout(function() {
@@ -228,20 +205,34 @@ window.onload = function() {
 				var token = madmap.addExplorationToken(madmap.getMapTileByName('lobby').getAnchor("leftdoor"));
 				token.bindTooltip("Can you resist the urge to click me?");
 				token.bindPopup("Of course not. Filthy human.<br>This has html too! Look!<br><marquee>Just scrollin by</marquee>");
-				
+				var x = new MadMapModal('exploreleft', {body: "Do you want to open this?"});
+				x.addButton("dialog", "Explore (action)", function() {
+					var sound = new Audio('data/sounds/door.mp3');
+					sound.play();
+					token.remove();
+					x.kill();
+					madmap.addTileByName("corridor", xy([-2,1]), xy([0,0]), {rotate: 0, fly: true});
+					window.setTimeout(function() {
+						var token = madmap.addExplorationToken(madmap.getMapTileByName('corridor').getAnchor("door")).addEventListener('click', exploreFunction);
+					}, 1000);
+				});
+				x.addToPage();
+				token.addEventListener('click', function() { x.toggle(); });
 			}, 1000);
 		}, 1000);
 	});
+	
 	startModal.toggle();
-	// console.log(startModal);
-	
-	
+
+	function exploreFunction() {
+		var sound = new Audio('data/sounds/door.mp3');
+		sound.play();
+		madmap.addTileByName("toilet", xy([-3,2]), xy([-1,1]), {rotate: 0, fly: true});
+		var x = new MadMapModal('ireallyneedanidfunction', {body: "Surprise toilet!<br>Congrats! You reached the end..<br>" + (window.hasLookedAtPicture?"btw: I know you searched the picture...":"btw: Why didnt you search the picture?"), head: "Surprise!", onClose: "kill"});
+		x.addToPage();
+		x.toggle();
+	}
 	// set up the default UI events
-	
-	// start
-	//$("#startModal")[0].addEventListener('click', function(e) { console.log(e); this.toggle(); });
-	//toggleModal(startModal);
-	
 	// settings
 	var music = document.getElementById("music");
 	var settingsModal = document.getElementById("settingsModal");
@@ -251,12 +242,9 @@ window.onload = function() {
 		if (this.checked) music.muted = false;
 		else music.muted = true;
 	});
-	
-	
 };
 
 // the class for modal windows
-// it takes an id and options
 //
 // options = title, body, onclose, ischeck
 // todo: add timed option
@@ -287,7 +275,7 @@ var MadMapModal = function(modalid, options) {
 			closeBtnText = 'Close';
 		}
 		var btnHtml = "";
-		this.buttons.forEach(function(el, i, arr) { btnHtml += "<button id=" + that.id + "_btn_" + el.id + ">" + el.text + "</button>" } );
+		this.buttons.forEach(function(el, i, arr) { btnHtml += "<br><button id=" + that.id + "_btn_" + el.id + ">" + el.text + "</button>" } );
 		this.htmlObj = ($(['<div id="' + this.id + '" class="modal">',
 		'<div class="modal-content">',
 		'<div class="modal-header">',
