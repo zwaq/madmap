@@ -5,8 +5,10 @@ var tiledb = [
         dimX: 3,
         dimY: 2,
         anchors: {
-			"door1": [10,10],
-			"stairstoright": [2,1.55]
+			"entrydoor": [1.5,0.2],
+			"leftdoor": [0.2, 0.5],
+			"stairstoright": [2,1.55],
+			"picturecenter": [1.5, 1.8]
 		}
     },
     {

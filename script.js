@@ -3,16 +3,40 @@ var exploreIcon = L.icon({
 	iconUrl: 'data/icons/explore.png',
 	iconSize:	  [100, 100], // size of the icon	 
 	iconAnchor:	  [50, 50], // point of the icon which will correspond to marker's location	   
-	popupAnchor:  [0, -50] // point from which the popup should open relative to the iconAnchor
+	popupAnchor:  [0, -50], // point from which the popup should open relative to the iconAnchor
+	tooltipAnchor: [50, 0]
 });
 	
 var searchIcon = L.icon({
 	iconUrl: 'data/icons/search.png',
 	iconSize:	  [100, 100], // size of the icon	 
 	iconAnchor:	  [50, 50], // point of the icon which will correspond to marker's location	   
-	popupAnchor:  [0, -50] // point from which the popup should open relative to the iconAnchor
+	popupAnchor:  [0, -50], // point from which the popup should open relative to the iconAnchor
+	tooltipAnchor: [50, 0]
 });
-   
+
+var investigators = [
+	{
+		"name": "Joe Clearstone",
+		"sex": "m",
+		"class": ["detective", "akimbo"]
+	},
+	{
+		"name": "Daextera Dragon",
+		"sex": "m",
+		"class": ["magic"]
+	},
+	{
+		"name": "Dandy Runner",
+		"sex": "f",
+		"class": ["booklover"]
+	},
+	{
+		"name": "Brother Maryus",
+		"sex": "m",
+		"class": ["religious"]
+	}
+]
 var getDbTileByName = function(tilename) {
 	for (var i = 0; i < tiledb.length; i++) {
 		if (tiledb[i].name == tilename) { return tiledb[i]; }
@@ -140,19 +164,18 @@ var MadMap = function(mapid) {
 	}
 	
 	this.addSearchToken = function(pt) {
-		return L.marker([pt[0],pt[1]], {icon: searchIcon, draggable: true}).addTo(this.map)
+		return L.marker([pt[0],pt[1]], {icon: searchIcon}).addTo(this.map)
 	}
 };
 
+var madmap;
 window.onload = function() {
 	
-	var madmap = new MadMap('map');
+	madmap = new MadMap('map');
 	// madmap.addTileByName("lobby", xy([-2,3]), xy([0,0]), {rotate: 3});
 	// madmap.addTileByName("lobby", xy([0,3]), xy([2,0]), {rotate: 1});
 	// madmap.addTileByName("lobby", xy([5,2]), xy([8,0]), {rotate: 2});
 	// madmap.addTileByName("lobby", xy([2,2]), xy([5,0]), {rotate: 0});
-	madmap.addTileByName("lobby", xy([0,3]), xy([2,0]), {rotate: 3});
-	madmap.addSearchToken(madmap.getMapTileByName('lobby').getAnchor("stairstoright"));
 	
 	
 	//madmap.addExplorationToken(madmap.getMapTileByName("ballroom").getAnchor("center"));
@@ -176,15 +199,42 @@ window.onload = function() {
 	//marker = madmap.addSearchToken(xy([1.5,2])).bindTooltip("dialogue test").bindPopup(dialogHandler);	
    
 	 // set up DOM elements
-	var settingsModal = document.getElementById("settingsModal");
-	//var startModal = document.getElementById("startModal");
-	var startModal = new MadMapModal("startModal", { title: "Welcome", body: "Welcome to this app", onClose: "kill"});
-	startModal.addButton("dialog", "hello thar", function() { var sound = new Audio('data/sounds/door.mp3'); sound.play(); console.log("ja hier"); console.log(this); alert("hi"); });
-	startModal.addButton("dialog", "get lost", function() { alert("tg"); });		
+	
+	var startModal = new MadMapModal("startModal", { title: "Welcome", body: "<p>Welcome to this proof of concept. This is the first screen. </p><p>It could describe the arrival of our heroes in a unknown haunted house. The lobby seems strangely familiar, though.</p><p>It is fully html enabled, allowing all kind of funny stuff <div style='text-align: center; font-weight: bold;'>like</div><div style='text-align: right;'>css.</div></p><p>This music is creepy, isnt it? Go check it out at <a href='http://freemusicarchive.org/music/Subterrestrial/Dead_But_Dreaming'>freemusicarchive.org</a>. You can disable it in the settings, if you want.</p><p>You can close this window with the close button below to enter our strange adventure!</p><p>Hero selection is not implemented yet.</p>", onClose: "kill"});
+	//startModal.addButton("dialog", "hello thar", function() { var sound = new Audio('data/sounds/door.mp3'); sound.play(); console.log("ja hier"); console.log(this); alert("hi"); });
+	//startModal.addButton("dialog", "get lost", function() { alert("tg"); });		
 	startModal.addToPage();
+	$("#startModalCloseBtn")[0].addEventListener('click', function() {
+		// this happens when the button was clicked
+		madmap.addTileByName("lobby", xy([0,2]), xy([3,0]), {rotate: 0, fly: true});
+		var token;
+		window.setTimeout(function() {
+			// this happens after 1000 ms
+			// add a search button with the usual cycle of sequential windows
+				var x = new MadMapModal('picture', {body: "It is a picture. Do you want to look closer? Do you?"});
+				x.addButton("dialog", "Search (action)", function() {
+					window.hasLookedAtPicture = true;
+					searchToken.remove();
+					x.kill();
+					var y = new MadMapModal('picturesearch', {body: "You squint your eyes looking at the picture, paying close attention to the tinyest details. Test Observation.", isCheck: true});
+					y.addToPage();
+					y.toggle();
+				});
+				x.addToPage();
+				var searchToken = madmap.addSearchToken(madmap.getMapTileByName('lobby').getAnchor("picturecenter")).addEventListener('click', function() {x.toggle();});
+			window.setTimeout(function() {
+				// this happens after 1000 ms (its cooler when icons fade in piece by piece)
+				// add an exploration token with tooltip and popup
+				var token = madmap.addExplorationToken(madmap.getMapTileByName('lobby').getAnchor("leftdoor"));
+				token.bindTooltip("Can you resist the urge to click me?");
+				token.bindPopup("Of course not. Filthy human.<br>This has html too! Look!<br><marquee>Just scrollin by</marquee>");
+				
+			}, 1000);
+		}, 1000);
+	});
 	startModal.toggle();
 	// console.log(startModal);
-	var music = document.getElementById("music");
+	
 	
 	// set up the default UI events
 	
@@ -193,6 +243,8 @@ window.onload = function() {
 	//toggleModal(startModal);
 	
 	// settings
+	var music = document.getElementById("music");
+	var settingsModal = document.getElementById("settingsModal");
 	document.getElementById("settingsBtn").addEventListener('click', function() { toggleModal(settingsModal); });
 	document.getElementById("settingsCloseBtn").addEventListener('click', function() { toggleModal(settingsModal); });
 	document.getElementById("settingsMusic").addEventListener('click', function() {
@@ -202,31 +254,20 @@ window.onload = function() {
 	
 	
 };
-	//document.getElementById("settingsEffects").addEventListener('click', toggleEffects); 
- //var doorPos = L.latLng([ 0, 0 ]);
-//var doorMarker = L.marker(doorPos, {icon: exploreIcon, title: "This is a door."}).addTo(map).bindPopup("<b>Hello world!</b><br>I am a popup.");
-	//sdoorMarker.on('click', function() {
-	//document.getElementById("foot").innerHTML += 'Another door opened.'; 
-	//var doorPos2 = L.latLng([ 260, 535 ]);
-	//var doorMarker2 = L.marker(doorPos2, {icon: exploreIcon, title: "This is another door."}).addTo(map).bindPopup("<b>Hello world!</b><br>I am a popup.");
-	//var bounds2 = [[100,-100], [0,0]];
-	//var image2 = L.imageOverlay('canvas-mask.jpg', bounds2).addTo(map);
-	//doorMarker2.on('mouseover', function() {
-	//alert("mouseover");
-//});
-//	  }
-//);
-//map.setView( [70, 120], 1);
 
 // the class for modal windows
 // it takes an id and options
+//
 // options = title, body, onclose, ischeck
+// todo: add timed option
+// todo: add "simple" modal that only has body and closebtn, for check results etc
+// todo: make usual search/interact usecase simpler
 var MadMapModal = function(modalid, options) {
 	var that = this;
 	
 	options = $.extend({
-		title: "abro",
-		body: "kadabro",
+		title: "",
+		body: "",
 		onClose: "toggle",
 		isCheck: false,
 		isMythos: false
@@ -283,8 +324,6 @@ var MadMapModal = function(modalid, options) {
 				else e.stopImmediatePropagation();
 			});
 		}
-		console.log(this);
-		console.log(that);
 		if (options.onClose == "kill") $("#" + this.id + "CloseBtn")[0].addEventListener('click', function() { getModalById(that.id).kill(); });
 		else $("#" + this.id + "CloseBtn")[0].addEventListener('click', function() { getModalById(that.id).toggle(); });
 		if (options.isMythos) $("#" + this.id + "CloseBtn")[0].addEventListener('click', function() { currentMythos = ""; });
@@ -330,17 +369,17 @@ function checkHandler(successes, id) {
 	console.log("successes:'" + successes + "'");
 	console.log("id: ", id);
 	switch (id) {
-		case "startModal":
-			// this is a cool way for interval-based cases
+		case "picturesearch":
+			// this is a cool hack for interval-based cases
 			switch(true) {
 				case ($.inArray(successes, [1,2]) !== -1):
-					alert("1-2");
+					alert("Oh you got one or two successes");
 					break;
 				case (successes>2):
-					alert("3+");
+					alert("3+. Great job!");
 					break;
 				default:
-					alert("default");
+					alert("Yeah... no.");
 		}
 	}
 }
@@ -360,7 +399,7 @@ function step() {
 			window.setTimeout(function() {
 				toggleModalById('mythosPhaseAnnounceModal');
 				doMythos(turncounter);
-				doMonsters();
+				//doMonsters();
 			}, 2000);
 			break;
 		case "Mythos":
@@ -369,7 +408,6 @@ function step() {
 			turncounter += 1;
 			window.setTimeout(function() {
 				toggleModalById('investigatorPhaseAnnounceModal');
-				
 			}, 2000);
 			break;
 	}
@@ -382,29 +420,8 @@ var mythosevents = [];
 var mythosInterval;
 var currentMythos = "";
 
-mythosevents.push({
-	prio: 100,
-	effect: function() {
-		var x = new MadMapModal('mythos123', {body: "This has prio 100", onClose: "kill"});
-		x.addToPage();
-		$("#mythos123CloseBtn")[0].addEventListener('click', function() { currentMythos = ""; } );
-		x.toggle();
-	}
-});
-mythosevents.push({
-	prio: 1000,
-	effect: function() {
-		var x = new MadMapModal('mythos234', {body: "This has prio 1000", onClose: "kill"});
-		x.addToPage();
-		$("#mythos234CloseBtn")[0].addEventListener('click', function() { currentMythos = ""; } );
-		x.toggle();
-		
-	}
-});
-
-
 function doNext(arr) {
-	console.log("running interval...");
+	console.log("running interval");
 	if (currentMythos == "") {
 		// start next item
 		arr[0].effect();
@@ -418,23 +435,21 @@ function doNext(arr) {
 		clearInterval(mythosInterval);
 	}
 }
-mythosInterval = window.setInterval(doNext, 100, mythosevents);
 
 function doMythos(turn) {
 	console.log("doing mythos for turn: " + turn);
 	// auto mythoshandling adds a random mythos each round
+	// then runs all events in order of priority
 	if (mythoshandling == "auto") {
-		
+		mythosevents.push(getRandFromArray(mythosdb));
+		mythosevents.push(getRandFromArray(mythosdb));
 		// sort by priority
 		mythosevents.sort(function(a, b) {
 			return a.prio - b.prio;
 		});
-		mythosevents.forEach(function(el, i, arr) {
-			el.effect();
-		});
-	}
-	// sort events by prio
-	
+		// poll for new events
+		mythosInterval = window.setInterval(doNext, 100, mythosevents);
+	}	
 }
 var monsters = [];
 monsters.push({ name: "Cthonian"});
@@ -473,5 +488,5 @@ function toggleModal(modal) {
 };
 
 function getRandFromArray(arr) {
-	return arr[Math.floor(colors.length * Math.random())];
+	return arr[Math.floor(arr.length * Math.random())];
 }

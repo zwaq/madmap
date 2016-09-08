@@ -1,1 +1,23 @@
-s
+var mythosdb = [
+	{
+		prio: 100,
+		effect: function() {
+			var randInv = getRandFromArray(investigators)
+			var x = new MadMapModal('mythos123', {isMythos: true, body: "Oh no: " + randInv.name + " has seen a weird shadow. " + (randInv.sex == "m"?"He":"She") + " cannot trust " + (randInv.sex == "m"?"his":"her") + " senses anymore! Take 2 mental damage (will negates).", onClose: "kill"});
+			x.addToPage();
+			x.toggle();
+		}
+	},
+	{
+		prio: 100,
+		effect: function() {
+			// only hit men
+			do {
+				var randInv = getRandFromArray(investigators)
+			} while (randInv.sex == "f");
+			var x = new MadMapModal('mythos124', {isMythos: true, body: randInv.name + " was hit in his balls and and takes 2 physical damage (str negates). (This event can only hit men)", onClose: "kill"});
+			x.addToPage();
+			x.toggle();
+		}
+	}
+];
