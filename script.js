@@ -177,7 +177,7 @@ window.onload = function() {
 	// madmap.addTileByName("lobby", xy([5,2]), xy([8,0]), {rotate: 2});
 	// madmap.addTileByName("lobby", xy([2,2]), xy([5,0]), {rotate: 0});
 	
-	var startModal = new MadMapModal("startModal", { title: "Welcome", body: "<p>Welcome to this proof of concept. This is the first screen. </p><p>Our investigators, in a unknown haunted house. The lobby seems strangely familiar, though.</p><p>It is fully html enabled, allowing all kind of funny stuff <div style='text-align: center; font-weight: bold;'>like</div><div style='text-align: right;'>css.</div></p><p>This music is creepy, isnt it? Go check it out at <a href='http://freemusicarchive.org/music/Subterrestrial/Dead_But_Dreaming'>freemusicarchive.org</a>. You can disable it in the settings, if you want.</p><p>You can close this window with the close button below to enter our strange little adventure!</p><p>Hero selection and Monsters are not implemented yet.</p>", onClose: "kill"});
+	var startModal = new MadMapModal("startModal", { title: "Welcome", body: "<p>Welcome to this proof of concept. This is the first screen. </p><p>Our investigators, in a unknown haunted house. The lobby seems strangely familiar, though.</p><p>It is fully html enabled, allowing all kind of funny stuff <div style='text-align: center; font-weight: bold;'>like</div><div style='text-align: right;'>css.</div></p><p>This music is creepy, isnt it? Go check it out at <a href='http://freemusicarchive.org/music/Subterrestrial/Dead_But_Dreaming'>freemusicarchive.org</a>. You can disable it in the settings, if you want.</p><p>You can close this window with the close button below to enter our strange little adventure!</p><p>Hero selection and Monsters are not implemented yet. Currently we play with four investigators: Joe Clearstone, Brother Maryus, Dandy Runner, Daextera Dragon</p>", onClose: "kill"});
 	
 	startModal.addToPage();
 	$("#startModalCloseBtn")[0].addEventListener('click', function() {
@@ -390,7 +390,7 @@ function step() {
 			window.setTimeout(function() {
 				toggleModalById('mythosPhaseAnnounceModal');
 				doMythos(turncounter);
-				//doMonsters();
+				//doMonsters(); not yet
 			}, 2000);
 			break;
 		case "Mythos":
@@ -432,7 +432,6 @@ function doMythos(turn) {
 	// auto mythoshandling adds a random mythos each round
 	// then runs all events in order of priority
 	if (mythoshandling == "auto") {
-		mythosevents.push(getRandFromArray(mythosdb));
 		mythosevents.push(getRandFromArray(mythosdb));
 		// sort by priority
 		mythosevents.sort(function(a, b) {
