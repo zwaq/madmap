@@ -177,9 +177,8 @@ window.onload = function() {
 	// madmap.addTileByName("lobby", xy([5,2]), xy([8,0]), {rotate: 2});
 	// madmap.addTileByName("lobby", xy([2,2]), xy([5,0]), {rotate: 0});
 	
-	var startModal = new MadMapModal("startModal", { title: "Welcome", body: "<p>Welcome to this proof of concept. This is the first screen. </p><p>It could describe the arrival of our heroes in a unknown haunted house. The lobby seems strangely familiar, though.</p><p>It is fully html enabled, allowing all kind of funny stuff <div style='text-align: center; font-weight: bold;'>like</div><div style='text-align: right;'>css.</div></p><p>This music is creepy, isnt it? Go check it out at <a href='http://freemusicarchive.org/music/Subterrestrial/Dead_But_Dreaming'>freemusicarchive.org</a>. You can disable it in the settings, if you want.</p><p>You can close this window with the close button below to enter our strange adventure!</p><p>Hero selection is not implemented yet.</p>", onClose: "kill"});
-	//startModal.addButton("dialog", "hello thar", function() { var sound = new Audio('data/sounds/door.mp3'); sound.play(); console.log("ja hier"); console.log(this); alert("hi"); });
-	//startModal.addButton("dialog", "get lost", function() { alert("tg"); });		
+	var startModal = new MadMapModal("startModal", { title: "Welcome", body: "<p>Welcome to this proof of concept. This is the first screen. </p><p>Our investigators, in a unknown haunted house. The lobby seems strangely familiar, though.</p><p>It is fully html enabled, allowing all kind of funny stuff <div style='text-align: center; font-weight: bold;'>like</div><div style='text-align: right;'>css.</div></p><p>This music is creepy, isnt it? Go check it out at <a href='http://freemusicarchive.org/music/Subterrestrial/Dead_But_Dreaming'>freemusicarchive.org</a>. You can disable it in the settings, if you want.</p><p>You can close this window with the close button below to enter our strange little adventure!</p><p>Hero selection and Monsters are not implemented yet.</p>", onClose: "kill"});
+	
 	startModal.addToPage();
 	$("#startModalCloseBtn")[0].addEventListener('click', function() {
 		// this happens when the close button of the startmodal was clicked
@@ -223,7 +222,9 @@ window.onload = function() {
 	});
 	
 	startModal.toggle();
-
+	
+	// to prevent the function tree vom building up too quickly, you can also just declare regular functions and use these as callbacks
+	// one of these could be used for every room
 	function exploreFunction() {
 		var sound = new Audio('data/sounds/door.mp3');
 		sound.play();
@@ -232,6 +233,7 @@ window.onload = function() {
 		x.addToPage();
 		x.toggle();
 	}
+	
 	// set up the default UI events
 	// settings
 	var music = document.getElementById("music");
@@ -370,6 +372,7 @@ function checkHandler(successes, id) {
 					alert("Yeah... no.");
 		}
 	}
+	alert("yes, this turns off the sound. I was too lazy to make actual modal windows, so I fell back on the good old javascript alert() to show differentiation of test results.");
 }
 //MadMapModal.createModal = function createModal(modalid, modaltitle, modalbody) {
   //  }
